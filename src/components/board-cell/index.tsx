@@ -1,7 +1,7 @@
 import { FC, ReactNode, useRef } from 'react'
 import { useDrop } from 'react-dnd'
 import { ItemsTypes } from '../../const'
-import Game, { Letter } from '../../Game'
+import { Letter } from '../../Game'
 import { useAppDispatch } from '../../hooks'
 import { boardActions, Position } from '../../store/board-slice'
 import { Cell } from '../cell'
@@ -12,31 +12,45 @@ export interface BoardSquareProps {
   x: Letter;
   y: number;
   children?: ReactNode;
-  game: Game;
+  // game: Game;
   black: boolean;
+  // knightPosition: Position;
+  moveKnight: (toX: Letter, toY: number) => void;
+  canMoveKnight: (toX: Letter, toY: number) => boolean;
 }
 
 export const BoardCell: FC<BoardSquareProps> = ({
   x,
   y,
   children,
-  game,
   black,
+  moveKnight,
+  canMoveKnight,
 }: BoardSquareProps) => {
+  // const dispatch = useAppDispatch();
 
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: ItemsTypes.KNIGHT,
-      canDrop: () =>  (
-          game.canMoveKnight(x, y)
-      ),
-      drop: () => game.moveKnight(x, y),
+      // canDrop: canDropCallback,
+      canDrop: () => {
+        // console.log("my", canMoveKnight(x, y));
+        // console.log("game", game.canMoveKnight(x, y));
+        return (
+          canMoveKnight(x, y)
+          // game.canMoveKnight(x, y)
+      )},
+      // drop: dropCallback,
+      drop: () => {
+        moveKnight(x, y)
+        // game.moveKnight(x, y)
+      },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
         canDrop: !!monitor.canDrop(),
       }),
     }),
-    [game],
+    [moveKnight, canMoveKnight],
   )
 
   const img = require("../../assets/knight.png");
@@ -48,8 +62,8 @@ export const BoardCell: FC<BoardSquareProps> = ({
       data-testid={`(${x},${y})`}
       style={{
         position: 'relative',
-        width: '100%',
-        height: '100%',
+        width: '64px',
+        height: '64px',
       }}
     >
       <Cell black={black}>{children}</Cell>

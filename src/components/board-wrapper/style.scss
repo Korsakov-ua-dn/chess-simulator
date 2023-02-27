@@ -1,0 +1,7 @@
+@import "../../scss/mixines.scss";
+
+.Board-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  @include flexCenter()
+}

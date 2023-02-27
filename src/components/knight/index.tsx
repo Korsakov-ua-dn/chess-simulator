@@ -12,9 +12,12 @@ export const Knight: FC = () => {
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
       type: ItemsTypes.KNIGHT,
-      collect: (monitor) => ({
-        isDragging: !!monitor.isDragging(),
-      }),
+      collect: (monitor) => {
+        // console.log(monitor);
+        return {
+          isDragging: !!monitor.isDragging(),
+        };
+      },
     }),
     []
   );
@@ -31,10 +34,14 @@ export const Knight: FC = () => {
           opacity: isDragging ? 0.5 : 1,
         }}
       >
-        <img src={img} alt=" " style={{
-          width: '80%',
-          height: '80%',
-        }} />
+        <img
+          src={img}
+          alt=" "
+          style={{
+            width: "80%",
+            height: "80%",
+          }}
+        />
         {/* ♘ */}
       </div>
     </>
