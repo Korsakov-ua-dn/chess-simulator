@@ -1,0 +1,78 @@
+import React from 'react';
+
+import { Board } from '../../components/board';
+import { BoardCell } from '../../components/board-cell';
+import BoardWrapper from '../../components/board-wrapper';
+import { Piece } from '../../components/piece';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { boardActions, letter, Letter, letterObj } from '../../store/board-slice';
+
+interface IProps {}
+
+export const BoardController: React.FC<IProps> = () => {
+  const dispatch = useAppDispatch();
+
+  const select = useAppSelector((state) => ({
+    pieces: state.board.pieces,
+  }));
+
+  // console.log(select.pieces);
+  // console.log(JSON.stringify(['b', 7]));
+  // console.log(select.pieces.get(JSON.stringify(['b', 7])));
+  
+
+  function move(id: string, toX: Letter, toY: number): void {
+    dispatch(boardActions.moveKnight({
+      prev: id, 
+      next: JSON.stringify([toX, toY])
+    }))
+  };
+
+  function canMove(id: string, toX: Letter, toY: number): boolean {
+    const [knightX, knightY] = JSON.parse(id) as [Letter, number];
+
+    const indexX = letterObj[knightX];
+    const indexToX = letterObj[toX];
+    const dx = indexToX - indexX
+    const dy = toY - knightY
+
+    return (
+      (Math.abs(dx) === 2 && Math.abs(dy) === 1) ||
+      (Math.abs(dx) === 1 && Math.abs(dy) === 2)
+    )
+  }
+
+  // const img = require("../../assets/knight.png");
+
+  function renderCell(i: number) {
+    const x = i % 8
+    const y = Math.floor(i / 8)
+
+    const key = JSON.stringify([letter[x], y]);
+    const piece = select.pieces[key]
+
+    return (
+      <BoardCell
+        key={i} 
+        x={letter[x]} 
+        y={y}
+        black={(x + y) % 2 === 1}
+        move={move}
+        canMove={canMove}
+      >
+        { piece ? <Piece piece={piece} id={key}/> : null }
+      </BoardCell>
+    )
+  }
+
+  const cells = []
+  for (let i = 0; i < 64; i += 1) {
+    cells.push(renderCell(i))
+  }
+
+  return (
+    <BoardWrapper>
+      <Board>{cells}</Board>
+    </BoardWrapper>
+  )
+}

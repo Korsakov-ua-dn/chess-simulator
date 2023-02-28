@@ -1,41 +1,19 @@
-import type { FC } from 'react'
+import React from 'react';
+import './style.scss';
 
-export enum OverlayType {
-  IllegalMoveHover = 'Illegal',
-  LegalMoveHover = 'Legal',
-  PossibleMove = 'Possible',
-}
-export interface OverlayProps {
-  type: OverlayType
+interface IProps {
+  color: Color
 }
 
-export const Overlay: FC<OverlayProps> = ({ type }) => {
-  const color = getOverlayColor(type)
+export const Overlay: React.FC<IProps> = ({ color }) => {
   return (
     <div
-      className="overlay"
-      role={type}
+      className="Board__overlay"
       style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        height: '100%',
-        width: '100%',
-        zIndex: 1,
-        opacity: 0.5,
         backgroundColor: color,
       }}
     />
   )
 }
 
-function getOverlayColor(type: OverlayType): string {
-  switch (type) {
-    case OverlayType.IllegalMoveHover:
-      return 'red'
-    case OverlayType.LegalMoveHover:
-      return 'green'
-    case OverlayType.PossibleMove:
-      return 'yellow'
-  }
-}
+type Color = 'red' | 'green' | 'yellow';

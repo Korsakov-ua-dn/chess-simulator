@@ -1,48 +1,47 @@
-import { FC, ReactNode, useRef } from 'react'
-import { useDrop } from 'react-dnd'
-import { ItemsTypes } from '../../const'
-import { Letter } from '../../Game'
-import { useAppDispatch } from '../../hooks'
-import { boardActions, Position } from '../../store/board-slice'
-import { Cell } from '../cell'
-import { Overlay, OverlayType } from '../overlay'
+import React from 'react';
+import { DropTargetMonitor, useDrop } from 'react-dnd';
 
+import { ItemsTypes } from '../../const';
+import { Letter } from '../../store/board-slice';
 
-export interface BoardSquareProps {
+import { Overlay } from '../overlay';
+
+import './style.scss';
+
+interface IProps {
   x: Letter;
   y: number;
-  children?: ReactNode;
-  // game: Game;
+  children?: React.ReactNode;
   black: boolean;
-  // knightPosition: Position;
-  moveKnight: (toX: Letter, toY: number) => void;
-  canMoveKnight: (toX: Letter, toY: number) => boolean;
+  move: (id: string, toX: Letter, toY: number) => void;
+  canMove: (id: string, toX: Letter, toY: number) => boolean;
 }
 
-export const BoardCell: FC<BoardSquareProps> = ({
+export const BoardCell: React.FC<IProps> = ({
   x,
   y,
   children,
   black,
-  moveKnight,
-  canMoveKnight,
-}: BoardSquareProps) => {
-  // const dispatch = useAppDispatch();
+  move,
+  canMove,
+}) => {
 
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: ItemsTypes.KNIGHT,
       // canDrop: canDropCallback,
-      canDrop: () => {
+      canDrop: (item: any) => {
+        // console.log(item);
         // console.log("my", canMoveKnight(x, y));
         // console.log("game", game.canMoveKnight(x, y));
         return (
-          canMoveKnight(x, y)
+          canMove(item.id, x, y)
           // game.canMoveKnight(x, y)
       )},
       // drop: dropCallback,
-      drop: () => {
-        moveKnight(x, y)
+      drop: (item: any) => {
+        // console.log(item);
+        move(item.id, x, y)
         // game.moveKnight(x, y)
       },
       collect: (monitor) => ({
@@ -50,26 +49,21 @@ export const BoardCell: FC<BoardSquareProps> = ({
         canDrop: !!monitor.canDrop(),
       }),
     }),
-    [moveKnight, canMoveKnight],
+    [move, canMove],
   )
 
-  const img = require("../../assets/knight.png");
+  const classN = `Board__cell ${black ? 'black' : ''}`;
 
   return (
     <div
+      className={classN}
       ref={drop}
-      role="Space"
-      data-testid={`(${x},${y})`}
-      style={{
-        position: 'relative',
-        width: '64px',
-        height: '64px',
-      }}
+      data-coords={`(${x},${y})`}
     >
-      <Cell black={black}>{children}</Cell>
-      {isOver && !canDrop && <Overlay type={OverlayType.IllegalMoveHover} />}
-      {!isOver && canDrop && <Overlay type={OverlayType.PossibleMove} />}
-      {isOver && canDrop && <Overlay type={OverlayType.LegalMoveHover} />}
+      {children}
+      {isOver && !canDrop && <Overlay color={'red'} />}
+      {!isOver && canDrop && <Overlay color={'yellow'} />}
+      {isOver && canDrop && <Overlay color={'green'} />}
     </div>
   )
 }
