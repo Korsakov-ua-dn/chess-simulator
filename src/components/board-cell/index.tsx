@@ -2,7 +2,7 @@ import React from 'react';
 import { DropTargetMonitor, useDrop } from 'react-dnd';
 
 import { ItemsTypes } from '../../const';
-import { Letter } from '../../store/board-slice';
+import { Letter, PieceType } from '../../store/board-slice';
 
 import { Overlay } from '../overlay';
 
@@ -14,7 +14,7 @@ interface IProps {
   children?: React.ReactNode;
   black: boolean;
   move: (id: string, toX: Letter, toY: number) => void;
-  canMove: (id: string, toX: Letter, toY: number) => boolean;
+  canMove: (id: string, type: PieceType, toX: Letter, toY: number) => boolean;
 }
 
 export const BoardCell: React.FC<IProps> = ({
@@ -35,7 +35,7 @@ export const BoardCell: React.FC<IProps> = ({
         // console.log("my", canMoveKnight(x, y));
         // console.log("game", game.canMoveKnight(x, y));
         return (
-          canMove(item.id, x, y)
+          canMove(item.id, item.type, x, y)
           // game.canMoveKnight(x, y)
       )},
       // drop: dropCallback,

@@ -5,7 +5,8 @@ import { BoardCell } from '../../components/board-cell';
 import BoardWrapper from '../../components/board-wrapper';
 import { Piece } from '../../components/piece';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { boardActions, letter, Letter, letterObj } from '../../store/board-slice';
+import { boardActions, letter, Letter, PieceType } from '../../store/board-slice';
+import { canMoveObj } from '../../utils/can-move';
 
 interface IProps {}
 
@@ -19,7 +20,6 @@ export const BoardController: React.FC<IProps> = () => {
   // console.log(select.pieces);
   // console.log(JSON.stringify(['b', 7]));
   // console.log(select.pieces.get(JSON.stringify(['b', 7])));
-  
 
   function move(id: string, toX: Letter, toY: number): void {
     dispatch(boardActions.moveKnight({
@@ -28,21 +28,14 @@ export const BoardController: React.FC<IProps> = () => {
     }))
   };
 
-  function canMove(id: string, toX: Letter, toY: number): boolean {
-    const [knightX, knightY] = JSON.parse(id) as [Letter, number];
+  function canMove(id: string, pieceType: PieceType, toX: Letter, toY: number): boolean {
+    const [x, y] = JSON.parse(id) as [Letter, number];
 
-    const indexX = letterObj[knightX];
-    const indexToX = letterObj[toX];
-    const dx = indexToX - indexX
-    const dy = toY - knightY
+    // Общее правило для всех фигур "false если ячейка занята другой фигурой"
+    if ( select.pieces[JSON.stringify([toX, toY])] ) return false;
 
-    return (
-      (Math.abs(dx) === 2 && Math.abs(dy) === 1) ||
-      (Math.abs(dx) === 1 && Math.abs(dy) === 2)
-    )
+    return canMoveObj[pieceType](x, y, toX, toY, select.pieces)
   }
-
-  // const img = require("../../assets/knight.png");
 
   function renderCell(i: number) {
     const x = i % 8

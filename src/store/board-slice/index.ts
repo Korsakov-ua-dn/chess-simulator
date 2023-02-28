@@ -47,9 +47,9 @@ export type CellNumber = number;
 // export type CellNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export const letter = ['a','b','c','d','e','f','g','h'] as const;
 export type Letter = typeof letter[number];
-export type IPiece = { type: PieceName, color: Color, id: string }
+export type IPiece = { type: PieceType, color: Color, id: string }
 export type Pieces = Record<string, IPiece>;
-type PieceName = 'knight' | 'rook';
+export type PieceType = 'knight' | 'rook';
 type Color = 'black' | 'white';
 export const letterObj = {
   a: 0,

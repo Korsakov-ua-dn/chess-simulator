@@ -14,7 +14,7 @@ interface IProps {
 export const Piece: FC<IProps> = ({ piece, id }) => {
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
-      item: { type: ItemsTypes.KNIGHT, id },
+      item: { type: piece.type, id },
       type: ItemsTypes.KNIGHT,
       collect: (monitor) => {
         // console.log(monitor);
