@@ -1,16 +1,11 @@
-import {
-  letter,
-  Letter,
-  letterObj,
-  Pieces,
-  PieceType,
-} from "../store/board-slice";
+import { Letter, PieceType, Positions } from "../../types";
+import { letter, letterObj } from "../letter";
 
 export const canMoveObj: Record<
   PieceType,
-  (x: Letter, y: number, toX: Letter, toY: number, pieces: Pieces) => boolean
+  (x: Letter, y: number, toX: Letter, toY: number, pieces: Positions) => boolean
 > = {
-  knight: (x: Letter, y: number, toX: Letter, toY: number, pieces: Pieces) => {
+  knight: (x: Letter, y: number, toX: Letter, toY: number, pieces: Positions) => {
     const indexX = letterObj[x];
     const indexToX = letterObj[toX];
     const dx = indexToX - indexX;
@@ -22,7 +17,7 @@ export const canMoveObj: Record<
     );
   },
 
-  rook: (x: Letter, y: number, toX: Letter, toY: number, pieces: Pieces) => {
+  rook: (x: Letter, y: number, toX: Letter, toY: number, pieces: Positions) => {
     // false если ячейка по диагонали
     if (x !== toX && y !== toY) {
       return false;
@@ -49,7 +44,7 @@ export const canMoveObj: Record<
     return true;
   },
 
-  bishop: (x: Letter, y: number, toX: Letter, toY: number, pieces: Pieces) => {
+  bishop: (x: Letter, y: number, toX: Letter, toY: number, pieces: Positions) => {
     const absX = Math.abs(letterObj[toX] - letterObj[x]);
     const absY = Math.abs(toY - y);
 

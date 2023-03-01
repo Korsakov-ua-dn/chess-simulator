@@ -1,21 +1,20 @@
-import type { FC } from "react";
+import React from "react";
 import { DragPreviewImage, useDrag } from "react-dnd";
 
-import { IPiece } from "../../store/board-slice";
-import { ItemsTypes } from "../../const";
+import { IPiece } from "../../types";
 
-import './style.scss';
+import "./style.scss";
 
 interface IProps {
   piece: IPiece;
   id: string;
 }
 
-export const Piece: FC<IProps> = ({ piece, id }) => {
+export const Piece: React.FC<IProps> = React.memo(({ piece, id }) => {
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
       item: { type: piece.type, id },
-      type: ItemsTypes.KNIGHT,
+      type: "Piece",
       collect: (monitor) => {
         return {
           item: monitor.getItem(),
@@ -32,7 +31,7 @@ export const Piece: FC<IProps> = ({ piece, id }) => {
     <>
       <DragPreviewImage connect={preview} src={img} />
       <div
-      className="Piece"
+        className="Piece"
         ref={drag}
         style={{
           opacity: isDragging ? 0.5 : 1,
@@ -45,4 +44,4 @@ export const Piece: FC<IProps> = ({ piece, id }) => {
       </div>
     </>
   );
-};
+});

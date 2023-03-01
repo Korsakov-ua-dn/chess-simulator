@@ -1,22 +1,12 @@
 import React, { useLayoutEffect } from "react";
-import { DndProvider } from 'react-dnd-multi-backend'
-import { HTML5toTouch } from 'rdndmb-html5-to-touch' // or any other pipeline
 
-import { BoardController } from "../containers/board-controller";
+import { BoardController } from "../modules/board-controller";
 import MainLayout from "../containers/main-layout";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { init } from "../store/board-slice";
+import { useAppDispatch } from "../hooks";
+import { init } from "../modules/board-controller/board-slice";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
-
-  const select = useAppSelector((state) => ({
-    pieces: state.board.pieces,
-    loading: state.board.loading,
-    error: state.board.error,
-  }));
-
-  // Object.keys(obj).length
 
   useLayoutEffect(() => {
     dispatch(init())
@@ -24,9 +14,7 @@ const App: React.FC = () => {
 
   return (
     <MainLayout>
-      <DndProvider options={HTML5toTouch}>
-        <BoardController />
-      </DndProvider>
+      <BoardController />
     </MainLayout>
   );
 };

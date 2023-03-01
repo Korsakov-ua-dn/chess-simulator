@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { DndProvider } from 'react-dnd-multi-backend';
+import { HTML5toTouch } from 'rdndmb-html5-to-touch';
 
-import { Board } from '../../components/board';
-import { BoardCell } from '../../components/board-cell';
-import BoardWrapper from '../../components/board-wrapper';
-import Button from '../../components/button';
-import { Piece } from '../../components/piece';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { restart, letter, Letter, move, PieceType } from '../../store/board-slice';
-import { canMoveObj } from '../../utils/can-move';
+import { Button } from '../../components/button';
+
+import { Board } from './components/board';
+import { BoardCell } from './components/board-cell';
+import { BoardWrapper } from './components/board-wrapper';
+import { Piece } from './components/piece';
+import { restart, move } from './board-slice';
+import { canMoveObj } from './utils/can-move';
+import { Letter, PieceType } from './types';
+import { letter } from './utils';
 
 interface IProps {}
 
@@ -19,25 +24,25 @@ export const BoardController: React.FC<IProps> = () => {
   }));
 
   const callbacks = {
-    move: (id: string, toX: Letter, toY: number): void => {
+    move: useCallback((id: string, toX: Letter, toY: number): void => {
       dispatch(move({
         prev: id, 
         next: JSON.stringify([toX, toY])
       }))
-    },
+    }, [dispatch]),
 
-    canMove: (id: string, pieceType: PieceType, toX: Letter, toY: number): boolean => {
+    canMove: useCallback((id: string, pieceType: PieceType, toX: Letter, toY: number): boolean => {
       const [x, y] = JSON.parse(id) as [Letter, number];
       // Общее правило для всех фигур "false если ячейка занята другой фигурой"
       if ( select.pieces[JSON.stringify([toX, toY])] ) {
         return false
       }
       return canMoveObj[pieceType](x, y, toX, toY, select.pieces)
-    },
+    }, [select.pieces]),
 
-    restart: (): void => {
+    restart: useCallback((): void => {
       dispatch(restart())
-    },
+    }, [dispatch]),
 
   }
 
@@ -68,9 +73,11 @@ export const BoardController: React.FC<IProps> = () => {
   }
 
   return (
-    <BoardWrapper>
-      <Board>{cells}</Board>
-      <Button onClick={callbacks.restart}>Restart Game</Button>
-    </BoardWrapper>
+    <DndProvider options={HTML5toTouch}>
+      <BoardWrapper>
+        <Board>{cells}</Board>
+        <Button onClick={callbacks.restart}>Restart Game</Button>
+      </BoardWrapper>
+    </DndProvider>
   )
 }

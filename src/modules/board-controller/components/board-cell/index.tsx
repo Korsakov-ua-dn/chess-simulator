@@ -1,8 +1,7 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 
-import { ItemsTypes } from '../../const';
-import { Letter, PieceType } from '../../store/board-slice';
+import { Letter, PieceType } from '../../types';
 
 import { Overlay } from '../overlay';
 
@@ -17,7 +16,7 @@ interface IProps {
   canMove: (id: string, type: PieceType, toX: Letter, toY: number) => boolean;
 }
 
-export const BoardCell: React.FC<IProps> = ({
+export const BoardCell: React.FC<IProps> = React.memo(({
   x,
   y,
   children,
@@ -28,7 +27,7 @@ export const BoardCell: React.FC<IProps> = ({
 
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
-      accept: ItemsTypes.KNIGHT,
+      accept: 'Piece',
       canDrop: (item: any) => {
         return (
           canMove(item.id, item.type, x, y)
@@ -41,7 +40,7 @@ export const BoardCell: React.FC<IProps> = ({
         canDrop: !!monitor.canDrop(),
       }),
     }),
-    [move, canMove],
+    [canMove],
   )
 
   const classN = `Board__cell ${black ? 'black' : ''}`;
@@ -50,7 +49,7 @@ export const BoardCell: React.FC<IProps> = ({
     <div
       className={classN}
       ref={drop}
-      data-coords={`(${x},${y})`}
+      data-coords={`(${x}, ${y})`} // only for check
     >
       {children}
       {isOver && !canDrop && <Overlay color={'red'} />}
@@ -58,4 +57,4 @@ export const BoardCell: React.FC<IProps> = ({
       {isOver && canDrop && <Overlay color={'green'} />}
     </div>
   )
-}
+});
