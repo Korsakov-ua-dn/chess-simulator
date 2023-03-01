@@ -10,6 +10,7 @@ const initialState: BoardState = {
   pieces: {
     [JSON.stringify(['a', 7])]: {type: 'rook', color: 'black', id: 'rook_black_1'},   
     [JSON.stringify(['b', 7])]: {type: 'knight', color: 'black', id: 'khight_black_1'},
+    [JSON.stringify(['f', 7])]: {type: 'bishop', color: 'black', id: 'bishop_black_2'},
     [JSON.stringify(['g', 7])]: {type: 'knight', color: 'black', id: 'khight_black_2'},
   },
   loading: false,
@@ -31,6 +32,7 @@ const BoardSlice = createSlice({
       state.pieces = {
         [JSON.stringify(['a', 7])]: {type: 'rook', color: 'black', id: 'rook_black_1'},
         [JSON.stringify(['b', 7])]: {type: 'knight', color: 'black', id: 'khight_black_1'},
+        [JSON.stringify(['f', 7])]: {type: 'bishop', color: 'black', id: 'bishop_black_2'},
         [JSON.stringify(['g', 7])]: {type: 'knight', color: 'black', id: 'khight_black_2'},
       }
     }
@@ -45,19 +47,20 @@ export default BoardSlice.reducer;
 export type Position = [Letter, CellNumber]
 export type CellNumber = number;
 // export type CellNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-export const letter = ['a','b','c','d','e','f','g','h'] as const;
+export const letter = ['h','g','f','e','d','c','b','a'] as const;
+// export const letter = ['a','b','c','d','e','f','g','h'] as const;
 export type Letter = typeof letter[number];
 export type IPiece = { type: PieceType, color: Color, id: string }
 export type Pieces = Record<string, IPiece>;
-export type PieceType = 'knight' | 'rook';
+export type PieceType = 'knight' | 'rook' | 'bishop';
 type Color = 'black' | 'white';
 export const letterObj = {
-  a: 0,
-  b: 1,
-  c: 2,
-  d: 3,
-  e: 4,
-  f: 5,
-  g: 6,
-  h: 7,
+  a: 7,
+  b: 6,
+  c: 5,
+  d: 4,
+  e: 3,
+  f: 2,
+  g: 1,
+  h: 0,
 }

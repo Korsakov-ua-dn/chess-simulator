@@ -1,4 +1,10 @@
-import { Letter, letterObj, Pieces, PieceType } from "../store/board-slice";
+import {
+  letter,
+  Letter,
+  letterObj,
+  Pieces,
+  PieceType,
+} from "../store/board-slice";
 
 export const canMoveObj: Record<
   PieceType,
@@ -28,15 +34,42 @@ export const canMoveObj: Record<
     const maxY = Math.max(y, toY);
 
     // false как только по оси Y на пути цели встретилась не пустая ячейка
-    for (let y = minY + 1; y < maxY; y++) {
-      if (pieces[JSON.stringify([x, y])]) return false;
+    for (let i = minY + 1; i < maxY; i++) {
+      if (pieces[JSON.stringify([x, i])]) {
+        return false;
+      }
     }
     // false как только по оси X на пути цели встретилась не пустая ячейка
-    for (let x = minX + 1; x < maxX; x++) {
-      const key = Object.keys(letterObj);
-      if (pieces[JSON.stringify([key[x], y])]) return false;
+    for (let i = minX + 1; i < maxX; i++) {
+      if (pieces[JSON.stringify([letter[i], y])]) {
+        return false;
+      }
     }
-    
+
+    return true;
+  },
+
+  bishop: (x: Letter, y: number, toX: Letter, toY: number, pieces: Pieces) => {
+    const absX = Math.abs(letterObj[toX] - letterObj[x]);
+    const absY = Math.abs(toY - y);
+
+    // false если ячейки не по диагонали
+    if (absY !== absX) {
+      return false;
+    }
+
+    const dy = y < toY ? 1 : -1;
+    const dx = x < toX ? -1 : 1;
+
+    // false как только по диагонали на пути цели встретилась не пустая ячейка
+    for (let i = 1; i <= absY; i++) {
+      const newX = letterObj[x] + dx * i;
+
+      if (pieces[JSON.stringify([letter[newX], y + dy * i])]) {
+        return false;
+      }
+    }
+
     return true;
   },
 };
