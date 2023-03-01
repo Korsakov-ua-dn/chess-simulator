@@ -3,6 +3,7 @@ import React from 'react';
 import { Board } from '../../components/board';
 import { BoardCell } from '../../components/board-cell';
 import BoardWrapper from '../../components/board-wrapper';
+import Button from '../../components/button';
 import { Piece } from '../../components/piece';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { boardActions, letter, Letter, PieceType } from '../../store/board-slice';
@@ -66,6 +67,7 @@ export const BoardController: React.FC<IProps> = () => {
   return (
     <BoardWrapper>
       <Board>{cells}</Board>
+      <Button>Restart Game</Button>
     </BoardWrapper>
   )
 }

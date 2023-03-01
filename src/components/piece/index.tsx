@@ -17,7 +17,6 @@ export const Piece: FC<IProps> = ({ piece, id }) => {
       item: { type: piece.type, id },
       type: ItemsTypes.KNIGHT,
       collect: (monitor) => {
-        // console.log(monitor);
         return {
           item: monitor.getItem(),
           isDragging: !!monitor.isDragging(),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropTargetMonitor, useDrop } from 'react-dnd';
+import { useDrop } from 'react-dnd';
 
 import { ItemsTypes } from '../../const';
 import { Letter, PieceType } from '../../store/board-slice';
@@ -29,20 +29,12 @@ export const BoardCell: React.FC<IProps> = ({
   const [{ isOver, canDrop }, drop] = useDrop(
     () => ({
       accept: ItemsTypes.KNIGHT,
-      // canDrop: canDropCallback,
       canDrop: (item: any) => {
-        // console.log(item);
-        // console.log("my", canMoveKnight(x, y));
-        // console.log("game", game.canMoveKnight(x, y));
         return (
           canMove(item.id, item.type, x, y)
-          // game.canMoveKnight(x, y)
       )},
-      // drop: dropCallback,
       drop: (item: any) => {
-        // console.log(item);
         move(item.id, x, y)
-        // game.moveKnight(x, y)
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),

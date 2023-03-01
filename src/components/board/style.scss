@@ -1,8 +1,10 @@
 @import "../../scss/variables.scss";
 
 .Board {
-  width: 512px;
-  height: 512px;
+  max-width: 512px;
+  max-height: 512px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   display: flex;
   flex-wrap: wrap;
   border: 1px solid grey;
