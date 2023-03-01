@@ -18,10 +18,6 @@ export const BoardController: React.FC<IProps> = () => {
     pieces: state.board.pieces,
   }));
 
-  // console.log(select.pieces);
-  // console.log(JSON.stringify(['b', 7]));
-  // console.log(select.pieces.get(JSON.stringify(['b', 7])));
-
   function move(id: string, toX: Letter, toY: number): void {
     dispatch(boardActions.moveKnight({
       prev: id, 
