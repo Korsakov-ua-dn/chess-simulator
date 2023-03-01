@@ -6,7 +6,7 @@ import BoardWrapper from '../../components/board-wrapper';
 import Button from '../../components/button';
 import { Piece } from '../../components/piece';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { boardActions, letter, Letter, PieceType } from '../../store/board-slice';
+import { restart, letter, Letter, move, PieceType } from '../../store/board-slice';
 import { canMoveObj } from '../../utils/can-move';
 
 interface IProps {}
@@ -18,20 +18,27 @@ export const BoardController: React.FC<IProps> = () => {
     pieces: state.board.pieces,
   }));
 
-  function move(id: string, toX: Letter, toY: number): void {
-    dispatch(boardActions.moveKnight({
-      prev: id, 
-      next: JSON.stringify([toX, toY])
-    }))
-  };
+  const callbacks = {
+    move: (id: string, toX: Letter, toY: number): void => {
+      dispatch(move({
+        prev: id, 
+        next: JSON.stringify([toX, toY])
+      }))
+    },
 
-  function canMove(id: string, pieceType: PieceType, toX: Letter, toY: number): boolean {
-    const [x, y] = JSON.parse(id) as [Letter, number];
+    canMove: (id: string, pieceType: PieceType, toX: Letter, toY: number): boolean => {
+      const [x, y] = JSON.parse(id) as [Letter, number];
+      // Общее правило для всех фигур "false если ячейка занята другой фигурой"
+      if ( select.pieces[JSON.stringify([toX, toY])] ) {
+        return false
+      }
+      return canMoveObj[pieceType](x, y, toX, toY, select.pieces)
+    },
 
-    // Общее правило для всех фигур "false если ячейка занята другой фигурой"
-    if ( select.pieces[JSON.stringify([toX, toY])] ) return false;
+    restart: (): void => {
+      dispatch(restart())
+    },
 
-    return canMoveObj[pieceType](x, y, toX, toY, select.pieces)
   }
 
   function renderCell(i: number) {
@@ -47,8 +54,8 @@ export const BoardController: React.FC<IProps> = () => {
         x={letter[x]} 
         y={y}
         black={(x + y) % 2 === 1}
-        move={move}
-        canMove={canMove}
+        move={callbacks.move}
+        canMove={callbacks.canMove}
       >
         { piece ? <Piece piece={piece} id={key}/> : null }
       </BoardCell>
@@ -63,7 +70,7 @@ export const BoardController: React.FC<IProps> = () => {
   return (
     <BoardWrapper>
       <Board>{cells}</Board>
-      <Button>Restart Game</Button>
+      <Button onClick={callbacks.restart}>Restart Game</Button>
     </BoardWrapper>
   )
 }

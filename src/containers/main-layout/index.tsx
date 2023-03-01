@@ -1,19 +1,26 @@
-import React, { useLayoutEffect } from 'react';
+import React from "react";
 
-import Layout from '../../components/layout';
+import Layout from "../../components/layout";
+import { useAppSelector } from "../../hooks";
+
 interface IProps {
   children: React.ReactNode;
 }
 
 const MainLayout: React.FC<IProps> = (props) => {
-
-  useLayoutEffect(() => {
-    // init app
-  }, []);
+  const select = useAppSelector((state) => ({
+    pieces: state.board.pieces,
+    loading: state.board.loading,
+    error: state.board.error,
+  }));
 
   return (
     <Layout>
-      {props.children}
+      {select.loading && "Загрузка информации..."}
+
+      {select.error && select.error}
+
+      {!!Object.keys(select.pieces).length && props.children}
     </Layout>
   );
 };

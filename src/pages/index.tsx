@@ -4,15 +4,23 @@ import { HTML5toTouch } from 'rdndmb-html5-to-touch' // or any other pipeline
 
 import { BoardController } from "../containers/board-controller";
 import MainLayout from "../containers/main-layout";
-import { useAppDispatch } from "../hooks";
-import { boardActions } from "../store/board-slice";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import { init } from "../store/board-slice";
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  // useLayoutEffect(() => {
-  //   dispatch(boardActions.init())
-  // }, [dispatch]);
+  const select = useAppSelector((state) => ({
+    pieces: state.board.pieces,
+    loading: state.board.loading,
+    error: state.board.error,
+  }));
+
+  // Object.keys(obj).length
+
+  useLayoutEffect(() => {
+    dispatch(init())
+  }, [dispatch]);
 
   return (
     <MainLayout>
