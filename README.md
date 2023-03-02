@@ -1,55 +1,46 @@
-# Getting Started with Create React App
+# "React(TS) - Шахматная доска, с перетаскиваемыми согласно правилам фигурами."
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Функционал:
 
-## Available Scripts
+- перетаскивание фигур мышью
+- подсветка допустимых для хода ячеек
+- сохранение состояния при обновлении страницы
+- сброс позиций фигур до стартового набора
 
-In the project directory, you can run:
+### Скриншот приложения из браузера:
 
-### `npm start`
+Ходит офицер. Желтым подсвечены клетки доступные для хода.
+![Screenshot of board](/../screenshot/screenshot/board.png?raw=true "Доска с фигурами")
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Ссылка на приложение развернутое на хостинге vercel:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+https://chess-simulator.vercel.app/
 
-### `npm test`
+## Технологический стек:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+React, TypeScript, Redux Toolkit, React-dnd, SCSS.
 
-### `npm run build`
+## Требования
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Node.js >= 16
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Установка
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`npm install`
 
-### `npm run eject`
+## Запуск для разработки
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+В режиме разработки (development) приложение запускается командой:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`npm start`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Сборка для продакшена
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Для публикации проекта на сервере сначала выполняется сборка приложения командой:
 
-## Learn More
+`npm run build`
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Комментарии к проекту:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-
-
-
-
-
-
-
-// localStorage should not contain elements other than chess pieces
+    - localStorage не должен содержать элементы кроме позиций фигур ( При разворачивании проекта локально проверьте что localStorage для https://localhost:3000/ не содержит посторонних элементов)
+    - при перетаскивании фигур на мобильных устройствах картинка фигуры отображается только в начальнойи конечной клетке на доске (как оказалось это известная проблема библиотеки react-dnd, решение которой я не нашел)
