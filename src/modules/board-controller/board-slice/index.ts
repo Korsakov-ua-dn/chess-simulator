@@ -1,14 +1,14 @@
 import {
-  PayloadAction,
-  createSlice,
-  createAsyncThunk,
   AnyAction,
-} from "@reduxjs/toolkit";
+  PayloadAction,
+  createAsyncThunk,
+  createSlice,
+} from '@reduxjs/toolkit';
 
-import { RootState } from "../../../store";
+import { RootState } from '../../../store';
 
-import { Positions } from "../types";
-import { startSet } from "../utils";
+import { Positions } from '../types';
+import { startSet } from '../utils';
 
 type BoardState = {
   pieces: Positions;
@@ -21,9 +21,9 @@ const initialState: BoardState = {
   loading: true,
   error: null,
 };
- 
+
 const BoardSlice = createSlice({
-  name: "board",
+  name: 'board',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -68,17 +68,17 @@ export const move = createAsyncThunk<
   { prev: string; next: string },
   { prev: string; next: string },
   { rejectValue: string; state: RootState }
->("board/MOVE_PIECE", async (payload, { rejectWithValue }) => {
+>('board/MOVE_PIECE', async (payload, { rejectWithValue }) => {
   try {
     const value = localStorage.getItem(payload.prev);
     if (value) {
       localStorage.removeItem(payload.prev);
-      localStorage.setItem(payload.next, value)
+      localStorage.setItem(payload.next, value);
     }
     return payload;
   } catch (err) {
     return rejectWithValue(
-      "Произошла ошибка, попробуйте перезагрузить страницу"
+      'Произошла ошибка, попробуйте перезагрузить страницу'
     );
   }
 });
@@ -87,16 +87,16 @@ export const restart = createAsyncThunk<
   Positions,
   undefined,
   { rejectValue: string; state: RootState }
->("board/RESTART_GAME", async (_, { rejectWithValue }) => {
+>('board/RESTART_GAME', async (_, { rejectWithValue }) => {
   try {
     localStorage.clear();
-    for (let key in startSet) {
+    for (const key in startSet) {
       localStorage.setItem(key, JSON.stringify(startSet[key]));
     }
     return startSet;
   } catch (err) {
     return rejectWithValue(
-      "Произошла ошибка, попробуйте перезагрузить страницу"
+      'Произошла ошибка, попробуйте перезагрузить страницу'
     );
   }
 });
@@ -105,32 +105,31 @@ export const init = createAsyncThunk<
   Positions | undefined,
   undefined,
   { rejectValue: string; state: RootState }
->("board/INIT_GAME", async (_, { rejectWithValue, dispatch }) => {
+>('board/INIT_GAME', async (_, { rejectWithValue, dispatch }) => {
   try {
-    const isStorage = localStorage.length
+    const isStorage = localStorage.length;
 
     if (!isStorage) {
       dispatch(restart());
     }
 
-    const storageItems = {...localStorage};
-    let storageSet: Positions = {};
-    for (let key in storageItems) {
+    const storageItems = { ...localStorage };
+    const storageSet: Positions = {};
+    for (const key in storageItems) {
       const item = localStorage.getItem(key);
       if (item) {
         storageSet[key] = JSON.parse(item);
       }
     }
     return storageSet;
-
   } catch (err) {
     return rejectWithValue(
-      "Произошла ошибка, попробуйте перезагрузить страницу"
+      'Произошла ошибка, попробуйте перезагрузить страницу'
     );
   }
 });
 
 // helpers
 function isError(action: AnyAction) {
-  return action.type.endsWith("rejected");
+  return action.type.endsWith('rejected');
 }

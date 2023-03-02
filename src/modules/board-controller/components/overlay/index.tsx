@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import "./style.scss";
+import './style.scss';
 
 interface IProps {
   color: Color;
@@ -17,4 +17,4 @@ export const Overlay: React.FC<IProps> = React.memo(({ color }) => {
   );
 });
 
-type Color = "red" | "green" | "yellow";
+type Color = 'red' | 'green' | 'yellow';

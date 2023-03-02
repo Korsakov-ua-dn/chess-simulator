@@ -1,11 +1,17 @@
-import { Letter, PieceType, Positions } from "../../types";
-import { letter, letterObj } from "../letter";
+import { Letter, PieceType, Positions } from '../../types';
+import { letter, letterObj } from '../letter';
 
 export const canMoveObj: Record<
   PieceType,
   (x: Letter, y: number, toX: Letter, toY: number, pieces: Positions) => boolean
 > = {
-  knight: (x: Letter, y: number, toX: Letter, toY: number, pieces: Positions) => {
+  knight: (
+    x: Letter,
+    y: number,
+    toX: Letter,
+    toY: number,
+    pieces: Positions
+  ) => {
     const indexX = letterObj[x];
     const indexToX = letterObj[toX];
     const dx = indexToX - indexX;
@@ -44,7 +50,13 @@ export const canMoveObj: Record<
     return true;
   },
 
-  bishop: (x: Letter, y: number, toX: Letter, toY: number, pieces: Positions) => {
+  bishop: (
+    x: Letter,
+    y: number,
+    toX: Letter,
+    toY: number,
+    pieces: Positions
+  ) => {
     const absX = Math.abs(letterObj[toX] - letterObj[x]);
     const absY = Math.abs(toY - y);
 

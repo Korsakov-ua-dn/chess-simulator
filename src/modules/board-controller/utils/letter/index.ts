@@ -1,4 +1,4 @@
-export const letter = ["h", "g", "f", "e", "d", "c", "b", "a"] as const;
+export const letter = ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'] as const;
 export const letterObj = {
   a: 7,
   b: 6,

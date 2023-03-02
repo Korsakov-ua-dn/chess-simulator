@@ -16,45 +16,38 @@ interface IProps {
   canMove: (id: string, type: PieceType, toX: Letter, toY: number) => boolean;
 }
 
-export const BoardCell: React.FC<IProps> = React.memo(({
-  x,
-  y,
-  children,
-  black,
-  move,
-  canMove,
-}) => {
-
-  const [{ isOver, canDrop }, drop] = useDrop(
-    () => ({
-      accept: 'Piece',
-      canDrop: (item: any) => {
-        return (
-          canMove(item.id, item.type, x, y)
-      )},
-      drop: (item: any) => {
-        move(item.id, x, y)
-      },
-      collect: (monitor) => ({
-        isOver: !!monitor.isOver(),
-        canDrop: !!monitor.canDrop(),
+export const BoardCell: React.FC<IProps> = React.memo(
+  ({ x, y, children, black, move, canMove }) => {
+    const [{ isOver, canDrop }, drop] = useDrop(
+      () => ({
+        accept: 'Piece',
+        canDrop: (item: any) => {
+          return canMove(item.id, item.type, x, y);
+        },
+        drop: (item: any) => {
+          move(item.id, x, y);
+        },
+        collect: (monitor) => ({
+          isOver: !!monitor.isOver(),
+          canDrop: !!monitor.canDrop(),
+        }),
       }),
-    }),
-    [canMove],
-  )
+      [canMove]
+    );
 
-  const classN = `Board__cell ${black ? 'black' : ''}`;
+    const classN = `Board__cell ${black ? 'black' : ''}`;
 
-  return (
-    <div
-      className={classN}
-      ref={drop}
-      data-coords={`(${x}, ${y})`} // only for check
-    >
-      {children}
-      {isOver && !canDrop && <Overlay color={'red'} />}
-      {!isOver && canDrop && <Overlay color={'yellow'} />}
-      {isOver && canDrop && <Overlay color={'green'} />}
-    </div>
-  )
-});
+    return (
+      <div
+        className={classN}
+        ref={drop}
+        data-coords={`(${x}, ${y})`} // only for check
+      >
+        {children}
+        {isOver && !canDrop && <Overlay color={'red'} />}
+        {!isOver && canDrop && <Overlay color={'yellow'} />}
+        {isOver && canDrop && <Overlay color={'green'} />}
+      </div>
+    );
+  }
+);
