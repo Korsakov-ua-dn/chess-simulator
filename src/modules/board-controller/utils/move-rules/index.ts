@@ -1,10 +1,25 @@
 import { Letter, PieceType, Positions } from '../../types';
+
 import { letter, letterObj } from '../letter';
 
-export const canMoveObj: Record<
-  PieceType,
+export const moveRules: Record<
+  PieceType | 'general',
   (x: Letter, y: number, toX: Letter, toY: number, pieces: Positions) => boolean
 > = {
+  general: (
+    x: Letter,
+    y: number,
+    toX: Letter,
+    toY: number,
+    pieces: Positions
+  ) => {
+    if (pieces[JSON.stringify([toX, toY])]) {
+      return false;
+    } else {
+      return true;
+    }
+  },
+
   knight: (
     x: Letter,
     y: number,

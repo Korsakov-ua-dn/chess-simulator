@@ -16,7 +16,7 @@ type BoardState = {
   error: string | null;
 };
 
-const initialState: BoardState = {
+export const initialState: BoardState = {
   pieces: {} as Positions,
   loading: true,
   error: null,

@@ -10,9 +10,8 @@ import { BoardCell } from './components/board-cell';
 import { BoardWrapper } from './components/board-wrapper';
 import { Piece } from './components/piece';
 import { move, restart } from './board-slice';
-import { canMoveObj } from './utils/can-move';
+import { letter, moveRules } from './utils';
 import { Letter, PieceType, Position } from './types';
-import { letter } from './utils';
 
 export const BoardController: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -42,12 +41,12 @@ export const BoardController: React.FC = () => {
         toY: number
       ): boolean => {
         const [x, y] = JSON.parse(position) as [Letter, number];
-        // Общее правило для всех фигур "false если ячейка занята другой фигурой"
-        if (select.pieces[JSON.stringify([toX, toY])]) {
-          return false;
-        }
-        // персональная проверка согласно типа фигуры и ее положения на доске
-        return canMoveObj[pieceType](x, y, toX, toY, select.pieces);
+        return (
+          // Общее правило для всех фигур "false если ячейка занята другой фигурой"
+          moveRules['general'](x, y, toX, toY, select.pieces) &&
+          // Персональная проверка согласно типа фигуры и ее положения на доске
+          moveRules[pieceType](x, y, toX, toY, select.pieces)
+        );
       },
       [select.pieces]
     ),
