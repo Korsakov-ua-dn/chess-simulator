@@ -1,19 +1,19 @@
 import React from 'react';
 import { DragPreviewImage, useDrag } from 'react-dnd';
 
-import { IPiece } from '../../types';
+import { IPiece, Position } from '../../types';
 
 import './style.scss';
 
 interface IProps {
   piece: IPiece;
-  id: string;
+  position: Position;
 }
 
-export const Piece: React.FC<IProps> = React.memo(({ piece, id }) => {
+export const Piece: React.FC<IProps> = React.memo(({ piece, position }) => {
   const [{ isDragging }, drag, preview] = useDrag(
     () => ({
-      item: { type: piece.type, id },
+      item: { type: piece.type, id: position },
       type: 'Piece',
       collect: (monitor) => {
         return {

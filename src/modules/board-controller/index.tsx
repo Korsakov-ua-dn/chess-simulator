@@ -11,7 +11,7 @@ import { BoardWrapper } from './components/board-wrapper';
 import { Piece } from './components/piece';
 import { move, restart } from './board-slice';
 import { canMoveObj } from './utils/can-move';
-import { Letter, PieceType } from './types';
+import { Letter, PieceType, Position } from './types';
 import { letter } from './utils';
 
 export const BoardController: React.FC = () => {
@@ -23,10 +23,10 @@ export const BoardController: React.FC = () => {
 
   const callbacks = {
     move: useCallback(
-      (id: string, toX: Letter, toY: number): void => {
+      (position: Position, toX: Letter, toY: number): void => {
         dispatch(
           move({
-            prev: id,
+            prev: position,
             next: JSON.stringify([toX, toY]),
           })
         );
@@ -35,12 +35,18 @@ export const BoardController: React.FC = () => {
     ),
 
     canMove: useCallback(
-      (id: string, pieceType: PieceType, toX: Letter, toY: number): boolean => {
-        const [x, y] = JSON.parse(id) as [Letter, number];
+      (
+        position: Position,
+        pieceType: PieceType,
+        toX: Letter,
+        toY: number
+      ): boolean => {
+        const [x, y] = JSON.parse(position) as [Letter, number];
         // Общее правило для всех фигур "false если ячейка занята другой фигурой"
         if (select.pieces[JSON.stringify([toX, toY])]) {
           return false;
         }
+        // персональная проверка согласно типа фигуры и ее положения на доске
         return canMoveObj[pieceType](x, y, toX, toY, select.pieces);
       },
       [select.pieces]
@@ -55,8 +61,8 @@ export const BoardController: React.FC = () => {
     const x = i % 8;
     const y = Math.floor(i / 8);
 
-    const key = JSON.stringify([letter[x], y]);
-    const piece = select.pieces[key];
+    const position = JSON.stringify([letter[x], y]);
+    const piece = select.pieces[position];
 
     return (
       <BoardCell
@@ -67,7 +73,7 @@ export const BoardController: React.FC = () => {
         move={callbacks.move}
         canMove={callbacks.canMove}
       >
-        {piece ? <Piece piece={piece} id={key} /> : null}
+        {piece ? <Piece piece={piece} position={position} /> : null}
       </BoardCell>
     );
   }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
 
-import { Letter, PieceType } from '../../types';
+import { Letter, PieceType, Position } from '../../types';
 
 import { Overlay } from '../overlay';
 
@@ -12,8 +12,13 @@ interface IProps {
   y: number;
   children?: React.ReactNode;
   black: boolean;
-  move: (id: string, toX: Letter, toY: number) => void;
-  canMove: (id: string, type: PieceType, toX: Letter, toY: number) => boolean;
+  move: (position: Position, toX: Letter, toY: number) => void;
+  canMove: (
+    position: Position,
+    type: PieceType,
+    toX: Letter,
+    toY: number
+  ) => boolean;
 }
 
 export const BoardCell: React.FC<IProps> = React.memo(
@@ -21,10 +26,10 @@ export const BoardCell: React.FC<IProps> = React.memo(
     const [{ isOver, canDrop }, drop] = useDrop(
       () => ({
         accept: 'Piece',
-        canDrop: (item: any) => {
+        canDrop: (item: { type: PieceType; id: Position }) => {
           return canMove(item.id, item.type, x, y);
         },
-        drop: (item: any) => {
+        drop: (item: { type: PieceType; id: Position }) => {
           move(item.id, x, y);
         },
         collect: (monitor) => ({
