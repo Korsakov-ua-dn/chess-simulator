@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { DndProvider } from 'react-dnd-multi-backend';
 import { HTML5toTouch } from 'rdndmb-html5-to-touch';
 
@@ -20,6 +20,33 @@ export const BoardController: React.FC = () => {
     pieces: state.board.pieces,
   }));
 
+  const canMoveHandler = (
+    position: Position,
+    pieceType: PieceType,
+    toX: Letter,
+    toY: number
+  ): boolean => {
+    const [x, y] = JSON.parse(position) as [Letter, number];
+    return (
+      // Общее правило для всех фигур "false если ячейка занята другой фигурой"
+      moveRules['general'](x, y, toX, toY, select.pieces) &&
+      // Персональная проверка согласно типа фигуры и ее положения на доске
+      moveRules[pieceType](x, y, toX, toY, select.pieces)
+    );
+  };
+
+  // мемоизация динамически генерируемого коллбэка => оптимизирует перерендер ячеек
+  const canMoveRef =
+    useRef<
+      (
+        position: Position,
+        pieceType: PieceType,
+        toX: Letter,
+        toY: number
+      ) => boolean
+    >(canMoveHandler);
+  canMoveRef.current = canMoveHandler;
+
   const callbacks = {
     move: useCallback(
       (position: Position, toX: Letter, toY: number): void => {
@@ -33,54 +60,36 @@ export const BoardController: React.FC = () => {
       [dispatch]
     ),
 
-    canMove: useCallback(
-      (
-        position: Position,
-        pieceType: PieceType,
-        toX: Letter,
-        toY: number
-      ): boolean => {
-        const [x, y] = JSON.parse(position) as [Letter, number];
-        return (
-          // Общее правило для всех фигур "false если ячейка занята другой фигурой"
-          moveRules['general'](x, y, toX, toY, select.pieces) &&
-          // Персональная проверка согласно типа фигуры и ее положения на доске
-          moveRules[pieceType](x, y, toX, toY, select.pieces)
-        );
-      },
-      [select.pieces]
-    ),
-
     restart: useCallback((): void => {
       dispatch(restart());
     }, [dispatch]),
   };
 
-  function renderCell(i: number) {
-    const x = i % 8;
-    const y = Math.floor(i / 8);
+  const cells = useMemo(() => {
+    const result = [];
+    for (let i = 0; i < 64; i += 1) {
+      const x = i % 8;
+      const y = Math.floor(i / 8);
 
-    const position = JSON.stringify([letter[x], y]);
-    const piece = select.pieces[position];
-
-    return (
-      <BoardCell
-        key={i}
-        x={letter[x]}
-        y={y}
-        black={(x + y) % 2 === 1}
-        move={callbacks.move}
-        canMove={callbacks.canMove}
-      >
-        {piece ? <Piece piece={piece} position={position} /> : null}
-      </BoardCell>
-    );
-  }
-
-  const cells = [];
-  for (let i = 0; i < 64; i += 1) {
-    cells.push(renderCell(i));
-  }
+      const position = JSON.stringify([letter[x], y]);
+      const piece = select.pieces[position];
+      result.push(
+        <BoardCell
+          key={i}
+          x={letter[x]}
+          y={y}
+          black={(x + y) % 2 === 1}
+          move={callbacks.move}
+          canMoveRef={canMoveRef}
+        >
+          {piece?.type ? (
+            <Piece type={piece.type} color={piece.color} position={position} />
+          ) : null}
+        </BoardCell>
+      );
+    }
+    return result;
+  }, [callbacks.move, select.pieces]);
 
   return (
     <DndProvider options={HTML5toTouch}>

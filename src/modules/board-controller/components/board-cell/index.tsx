@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MutableRefObject } from 'react';
 import { useDrop } from 'react-dnd';
 
 import { Letter, PieceType, Position } from '../../types';
@@ -13,21 +13,23 @@ interface IProps {
   children?: React.ReactNode;
   black: boolean;
   move: (position: Position, toX: Letter, toY: number) => void;
-  canMove: (
-    position: Position,
-    type: PieceType,
-    toX: Letter,
-    toY: number
-  ) => boolean;
+  canMoveRef: MutableRefObject<
+    (
+      position: Position,
+      pieceType: PieceType,
+      toX: Letter,
+      toY: number
+    ) => boolean
+  >;
 }
 
 export const BoardCell: React.FC<IProps> = React.memo(
-  ({ x, y, children, black, move, canMove }) => {
+  ({ x, y, children, black, move, canMoveRef }) => {
     const [{ isOver, canDrop }, drop] = useDrop(
       () => ({
         accept: 'Piece',
         canDrop: (item: { type: PieceType; id: Position }) => {
-          return canMove(item.id, item.type, x, y);
+          return canMoveRef.current(item.id, item.type, x, y);
         },
         drop: (item: { type: PieceType; id: Position }) => {
           move(item.id, x, y);
@@ -37,7 +39,7 @@ export const BoardCell: React.FC<IProps> = React.memo(
           canDrop: !!monitor.canDrop(),
         }),
       }),
-      [canMove]
+      []
     );
 
     const classN = `Board__cell ${black ? 'black' : ''}`;
